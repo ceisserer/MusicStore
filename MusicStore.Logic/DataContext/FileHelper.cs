@@ -8,7 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using CommonBase.Extensions;
 
-namespace MusicStore.Logic.Context
+namespace MusicStore.Logic.DataContext
 {
     internal static class FileHelper
     {
@@ -31,7 +31,7 @@ namespace MusicStore.Logic.Context
         {
             List<T> result = new List<T>();
 
-            result.AddRange(File.ReadAllLines(filePath, Encoding.Default)
+            result.AddRange(File.ReadAllLines(filePath, Encoding.UTF8)
                 .SplitAndMap<T>(Separator, (d, h) =>
                 {
                     return d.CreateObject<T>(h);
@@ -82,7 +82,7 @@ namespace MusicStore.Logic.Context
                 }
                 lines.Add(sb.ToString());
             }
-            File.WriteAllLines(filePath, lines.ToArray(), Encoding.Default);
+            File.WriteAllLines(filePath, lines.ToArray(), Encoding.UTF8);
         }
 
         internal static string GetSerFileName(Type type)

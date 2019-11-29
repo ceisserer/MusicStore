@@ -1,13 +1,13 @@
-﻿using MusicStore.Logic.Context;
+﻿using MusicStore.Logic.DataContext;
 using System.Collections.Generic;
 
 namespace MusicStore.Logic.Controllers
 {
-	class ArtistController : MusicStoreController<Entities.Artist, Contracts.IArtist>
+    class ArtistController : MusicStoreController<Entities.Persistence.Artist, Contracts.IArtist>
 	{
-        protected override IEnumerable<Entities.Artist> Set => MusicStoreContext.Artists;
+        protected override IEnumerable<Entities.Persistence.Artist> Set => MusicStoreContext.Artists;
 
-		public ArtistController(ContextObject context)
+		public ArtistController(IContext context)
             : base(context)
         {
         }

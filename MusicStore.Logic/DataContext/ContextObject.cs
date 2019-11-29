@@ -1,22 +1,40 @@
-﻿using System;
+﻿using MusicStore.Contracts;
+using MusicStore.Logic.Entities;
+using System.Threading.Tasks;
 
-namespace MusicStore.Logic.Context
+namespace MusicStore.Logic.DataContext
 {
-	internal abstract class ContextObject : IDisposable
+    internal abstract class ContextObject : IContext
     {
+        #region Sync-Methods
+        public abstract int Count<I, E>()
+            where I : IIdentifiable
+            where E : IdentityObject, I;
+
+        public abstract E Create<I, E>()
+            where I : IIdentifiable
+            where E : IdentityObject, I, ICopyable<I>, new();
+
         public abstract E Insert<I, E>(I entity)
-            where E : Entities.EntityObject, I, Contracts.ICopyable<I>, new()
-            where I : Contracts.IIdentifiable;
+            where I : IIdentifiable
+            where E : IdentityObject, I, ICopyable<I>, new();
 
         public abstract E Update<I, E>(I entity)
-            where E : Entities.EntityObject, I, Contracts.ICopyable<I>
-            where I : Contracts.IIdentifiable;
+            where I : IIdentifiable
+            where E : IdentityObject, I, ICopyable<I>, new();
 
         public abstract E Delete<I, E>(int id)
-            where E : Entities.EntityObject, I
-            where I : Contracts.IIdentifiable;
+            where I : IIdentifiable
+            where E : IdentityObject, I;
 
         public abstract void Save();
+        #endregion Sync-Methods
+
+        #region Async-Methods
+        public abstract Task<int> CountAsync<I, E>()
+            where I : IIdentifiable
+            where E : IdentityObject, I;
+        #endregion Async-Methods
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

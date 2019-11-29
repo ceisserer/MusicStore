@@ -1,13 +1,13 @@
 ﻿using System;
 using MusicStore.Contracts;
 
-namespace MusicStore.Logic.Entities
+namespace MusicStore.Logic.Entities.Persistence
 {
     /// <summary>
     /// Implements the properties and methods of identifiable model.
     /// </summary>
     [Serializable]
-    partial class Track : EntityObject, ITrack, ICopyable<ITrack>
+    partial class Track : IdentityObject, ITrack, ICopyable<ITrack>
     {
         public int AlbumId { get; set; }
         public int GenreId { get; set; }
@@ -31,5 +31,8 @@ namespace MusicStore.Logic.Entities
             Bytes = other.Bytes;
             UnitPrice = other.UnitPrice;
         }
+
+		public Album Album { get; set; }
+		public Genre Genre { get; set; }
     }
 }

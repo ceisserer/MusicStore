@@ -7,7 +7,7 @@ namespace MusicStore.Logic.Entities
     /// Implements the properties and methods of identifiable model.
     /// </summary>
     [Serializable]
-    abstract partial class IdentityObject : Contracts.IIdentifiable
+	abstract partial class IdentityObject : Contracts.IIdentifiable
     {
         /// <inheritdoc />
         public int Id { get; set; }

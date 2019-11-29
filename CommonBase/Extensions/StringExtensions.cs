@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace CommonBase.Extensions
@@ -10,6 +9,11 @@ namespace CommonBase.Extensions
         public static bool HasContent(this string source)
         {
             return string.IsNullOrEmpty(source) == false;
+        }
+
+        public static bool NotEquals(this string source, string other)
+        {
+            return source.Equals(other) == false;
         }
 
         public static IEnumerable<string[]> Split(this IEnumerable<string> source, string separator)

@@ -29,21 +29,21 @@ namespace MusicStore.WebApi.Controllers
         {
             using var ctrl = CreateController();
             ctrl.Insert(model);
-            ctrl.Save();
+            ctrl.SaveChanges();
         }
 
         public void Update(int id, [FromBody] M model)
         {
             using var ctrl = CreateController();
             ctrl.Update(model);
-            ctrl.Save();
+            ctrl.SaveChanges();
         }
 
         public void DeleteById(int id)
         {
             using var ctrl = CreateController();
             ctrl.Delete(id);
-            ctrl.Save();
+            ctrl.SaveChanges();
         }
     }
 }

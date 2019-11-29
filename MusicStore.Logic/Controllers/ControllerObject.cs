@@ -1,14 +1,14 @@
-﻿using MusicStore.Logic.Context;
-using System;
+﻿using System;
+using MusicStore.Logic.DataContext;
 
 namespace MusicStore.Logic.Controllers
 {
     internal abstract class ControllerObject : IDisposable
     {
 		private bool contextDispose;
-        protected ContextObject Context { get; private set; }
+        protected IContext Context { get; private set; }
 
-        protected ControllerObject(ContextObject context)
+        protected ControllerObject(IContext context)
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));

@@ -37,7 +37,7 @@ namespace MusicStore.WebApi.Controllers
             using (var ctrl = Factory.CreateController<Entity>())
             {
                 ctrl.Insert(model);
-                ctrl.Save();
+                ctrl.SaveChanges();
             }
         }
 
@@ -48,7 +48,7 @@ namespace MusicStore.WebApi.Controllers
             using (var ctrl = Factory.CreateController<Entity>())
             {
                 ctrl.Update(model);
-                ctrl.Save();
+                ctrl.SaveChanges();
             }
         }
 
@@ -59,7 +59,7 @@ namespace MusicStore.WebApi.Controllers
             using (var ctrl = Factory.CreateController<Entity>())
             {
                 ctrl.Delete(id);
-                ctrl.Save();
+                ctrl.SaveChanges();
             }
         }
     }

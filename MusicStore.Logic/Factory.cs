@@ -6,21 +6,26 @@ namespace MusicStore.Logic
     {
         public enum PersistenceType
         {
+            Db,
             Csv,
             Ser,
         }
         public static PersistenceType Persistence { get; set; } = Factory.PersistenceType.Csv;
-        private static Context.ContextObject CreateContext()
+        private static DataContext.IContext CreateContext()
         {
-            Context.ContextObject result = null;
+            DataContext.IContext result = null;
 
             if (Persistence == PersistenceType.Csv)
             {
-                result = new Context.CsvMusicStoreContext();
+                result = new DataContext.Csv.CsvMusicStoreContext();
+            }
+            else if (Persistence == PersistenceType.Db)
+            {
+                result = new DataContext.Db.DbMusicStoreContext();
             }
             else if (Persistence == PersistenceType.Ser)
             {
-                result = new Context.SerMusicStoreContext();
+                result = new DataContext.Ser.SerMusicStoreContext();
             }
             return result;
         }

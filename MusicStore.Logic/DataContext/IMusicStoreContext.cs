@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using MusicStore.Logic.Entities;
+using MusicStore.Logic.Entities.Persistence;
 
-namespace MusicStore.Logic.Context
+namespace MusicStore.Logic.DataContext
 {
     internal interface IMusicStoreContext
     {

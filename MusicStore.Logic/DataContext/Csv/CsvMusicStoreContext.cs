@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace MusicStore.Logic.Context
+namespace MusicStore.Logic.DataContext.Csv
 {
     internal class CsvMusicStoreContext : MusicStoreFileContext
     {

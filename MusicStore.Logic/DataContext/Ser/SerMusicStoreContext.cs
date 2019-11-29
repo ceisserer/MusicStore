@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace MusicStore.Logic.Context
+namespace MusicStore.Logic.DataContext.Ser
 {
     internal class SerMusicStoreContext : MusicStoreFileContext
     {

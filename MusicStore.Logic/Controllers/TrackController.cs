@@ -1,13 +1,13 @@
-﻿using MusicStore.Logic.Context;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using MusicStore.Logic.DataContext;
 
 namespace MusicStore.Logic.Controllers
 {
-	class TrackController : MusicStoreController<Entities.Track, Contracts.ITrack>
+	class TrackController : MusicStoreController<Entities.Persistence.Track, Contracts.ITrack>
 	{
-        protected override IEnumerable<Entities.Track> Set => MusicStoreContext.Tracks;
+        protected override IEnumerable<Entities.Persistence.Track> Set => MusicStoreContext.Tracks;
 
-		public TrackController(ContextObject context)
+		public TrackController(IContext context)
             : base(context)
         {
         }
