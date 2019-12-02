@@ -26,7 +26,7 @@ namespace MusicStore.Logic.DataContext
             //LoadRelations();
         }
         #region Load methods
-        protected abstract List<T> LoadEntities<T>() 
+        protected abstract List<T> LoadEntities<T>()
             where T : class, new();
         protected void LoadRelations()
         {
@@ -104,6 +104,52 @@ namespace MusicStore.Logic.DataContext
         {
             return Task.Run(() => Set<I, E>().Count());
         }
+        public override Task<E> CreateAsync<I, E>()
+        {
+            return Task.Run(() => new E());
+        }
+        public override Task<E> InsertAsync<I, E>(I entity)
+        {
+            entity.CheckArgument(nameof(entity));
+
+            return Task.Run(() =>
+            {
+                E result = new E();
+
+                result.CopyProperties(entity);
+                result.Id = 0;
+                Set<I, E>().Add(result);
+                return result;
+            });
+        }
+        public override Task<E> UpdateAsync<I, E>(I entity)
+        {
+            entity.CheckArgument(nameof(entity));
+
+            return Task.Run(() =>
+            {
+                E result = Set<I, E>().SingleOrDefault(i => i.Id == entity.Id);
+
+                if (result != null)
+                {
+                    result.CopyProperties(entity);
+                }
+                return result;
+            });
+        }
+        public override Task<E> DeleteAsync<I, E>(int id)
+        {
+            return Task.Run(() =>
+            {
+                E result = Set<I, E>().SingleOrDefault(i => i.Id == id);
+
+                if (result != null)
+                {
+                    Set<I, E>().Remove(result);
+                }
+                return result;
+            });
+        }
         #endregion Async-Methods
 
         #region Helpers
@@ -113,19 +159,19 @@ namespace MusicStore.Logic.DataContext
         {
             List<E> result;
 
-            if (typeof(I) is Contracts.IGenre)
+            if (typeof(I) == typeof(Contracts.IGenre))
             {
                 result = genres as List<E>;
             }
-            else if (typeof(I) is Contracts.IArtist)
+            else if (typeof(I) == typeof(Contracts.IArtist))
             {
                 result = artists as List<E>;
             }
-            else if (typeof(I) is Contracts.IAlbum)
+            else if (typeof(I) == typeof(Contracts.IAlbum))
             {
                 result = albums as List<E>;
             }
-            else if (typeof(I) is Contracts.ITrack)
+            else if (typeof(I) == typeof(Contracts.ITrack))
             {
                 result = tracks as List<E>;
             }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MusicStore.Logic.DataContext.Ser
 {
@@ -9,6 +10,12 @@ namespace MusicStore.Logic.DataContext.Ser
         {
         }
 
+        protected override List<T> LoadEntities<T>()
+        {
+            return LoadFromSer<T>();
+        }
+
+        #region Sync-Methods
         public override void Save()
         {
             SaveToSer(Genres);
@@ -16,10 +23,19 @@ namespace MusicStore.Logic.DataContext.Ser
             SaveToSer(Albums);
             SaveToSer(Tracks);
         }
+        #endregion Sync-Methods
 
-        protected override List<T> LoadEntities<T>()
+        #region Async-Methods
+        public override Task SaveAsync()
         {
-            return LoadFromSer<T>();
+            return Task.Run(() =>
+            {
+                SaveToSer(Genres);
+                SaveToSer(Artists);
+                SaveToSer(Albums);
+                SaveToSer(Tracks);
+            });
         }
+        #endregion Async-Methods
     }
 }

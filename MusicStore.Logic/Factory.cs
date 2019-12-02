@@ -77,7 +77,7 @@ namespace MusicStore.Logic
 
         public static IController<Contracts.IGenre> CreateGenreController()
         {
-            return new Controllers.GenreController(CreateContext());
+            return new Controllers.Persistence.GenreController(CreateContext());
         }
 		public static IController<Contracts.IGenre> CreateGenreController(object sharedController)
 		{
@@ -86,12 +86,12 @@ namespace MusicStore.Logic
 
 			Controllers.ControllerObject controller = (Controllers.ControllerObject)sharedController;
 
-			return new Controllers.GenreController(controller);
+			return new Controllers.Persistence.GenreController(controller);
 		}
 
 		public static IController<Contracts.IArtist> CreateArtistController()
 		{
-			return new Controllers.ArtistController(CreateContext());
+			return new Controllers.Persistence.ArtistController(CreateContext());
 		}
 		public static IController<Contracts.IArtist> CreateArtistController(object sharedController)
 		{
@@ -100,12 +100,12 @@ namespace MusicStore.Logic
 
 			Controllers.ControllerObject controller = (Controllers.ControllerObject)sharedController;
 
-			return new Controllers.ArtistController(controller);
+			return new Controllers.Persistence.ArtistController(controller);
 		}
 
         public static IController<Contracts.IAlbum> CreateAlbumController()
         {
-            return new Controllers.AlbumController(CreateContext());
+            return new Controllers.Persistence.AlbumController(CreateContext());
         }
         public static IController<Contracts.IAlbum> CreateAlbumController(object sharedController)
         {
@@ -114,12 +114,12 @@ namespace MusicStore.Logic
 
             Controllers.ControllerObject controller = (Controllers.ControllerObject)sharedController;
 
-            return new Controllers.AlbumController(controller);
+            return new Controllers.Persistence.AlbumController(controller);
         }
 
         public static IController<Contracts.ITrack> CreateTrackController()
         {
-            return new Controllers.TrackController(CreateContext());
+            return new Controllers.Persistence.TrackController(CreateContext());
         }
         public static IController<Contracts.ITrack> CreateTrackController(object sharedController)
         {
@@ -128,7 +128,7 @@ namespace MusicStore.Logic
 
             Controllers.ControllerObject controller = (Controllers.ControllerObject)sharedController;
 
-            return new Controllers.TrackController(controller);
+            return new Controllers.Persistence.TrackController(controller);
         }
     }
 }

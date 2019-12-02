@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MusicStore.Logic.DataContext;
 
-namespace MusicStore.Logic.Controllers
+namespace MusicStore.Logic.Controllers.Persistence
 {
 	class TrackController : MusicStoreController<Entities.Persistence.Track, Contracts.ITrack>
 	{

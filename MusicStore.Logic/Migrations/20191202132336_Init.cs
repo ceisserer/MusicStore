@@ -2,7 +2,7 @@
 
 namespace MusicStore.Logic.Migrations
 {
-    public partial class InitDb : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
