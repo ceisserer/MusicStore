@@ -8,11 +8,11 @@ namespace MusicStore.Logic.Entities.Persistence
     /// Implements the properties and methods of identifiable model.
     /// </summary>
     [Serializable]
-    partial class Artist : IdentityObject, IArtist, ICopyable<IArtist>
+    partial class Artist : IdentityObject, Contracts.Persistence.IArtist, ICopyable<Contracts.Persistence.IArtist>
     {
         public string Name { get; set; }
 
-		public void CopyProperties(IArtist other)
+		public void CopyProperties(Contracts.Persistence.IArtist other)
 		{
 			if (other == null)
 				throw new ArgumentNullException(nameof(other));

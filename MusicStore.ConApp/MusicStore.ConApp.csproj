@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MusicStore.Adapters\MusicStore.Adapters.csproj" />
     <ProjectReference Include="..\MusicStore.Contracts\MusicStore.Contracts.csproj" />
-    <ProjectReference Include="..\MusicStore.Logic\MusicStore.Logic.csproj" />
   </ItemGroup>
 
 </Project>

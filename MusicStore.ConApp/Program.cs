@@ -7,13 +7,13 @@ namespace MusicStore.ConApp
     {
         static async Task Main(string[] args)
         {
- //           await CopyDataFromToAsync(Logic.Factory.PersistenceType.Csv, Logic.Factory.PersistenceType.Db);
+ //           await CopyDataFromToLogicAsync(Logic.Factory.PersistenceType.Csv, Logic.Factory.PersistenceType.Db);
 
             // Output
-            await PrintDataAsync(Logic.Factory.PersistenceType.Db);
+            PrintDataAdapter(Adapters.Factory.AdapterType.Service);
         }
 
-        static void CopyDataFromTo(Logic.Factory.PersistenceType source, Logic.Factory.PersistenceType target)
+        static void CopyDataFromToByLogic(Logic.Factory.PersistenceType source, Logic.Factory.PersistenceType target)
         {
             Logic.Factory.Persistence = source;
             using (var genreCtrl = Logic.Factory.CreateGenreController())
@@ -22,38 +22,38 @@ namespace MusicStore.ConApp
             using (var trackCtrl = Logic.Factory.CreateTrackController(genreCtrl))
             {
                 Logic.Factory.Persistence = target;
-                using (var genreSerCtrl = Logic.Factory.CreateGenreController())
-                using (var artistSerCtrl = Logic.Factory.CreateArtistController(genreSerCtrl))
-                using (var albumSerCtrl = Logic.Factory.CreateAlbumController(genreSerCtrl))
-                using (var trackSerCtrl = Logic.Factory.CreateTrackController(genreSerCtrl))
+                using (var genreCpyCtrl = Logic.Factory.CreateGenreController())
+                using (var artistCpyCtrl = Logic.Factory.CreateArtistController(genreCpyCtrl))
+                using (var albumCpyCtrl = Logic.Factory.CreateAlbumController(genreCpyCtrl))
+                using (var trackCpyCtrl = Logic.Factory.CreateTrackController(genreCpyCtrl))
                 {
                     foreach (var item in genreCtrl.GetAll())
                     {
-                        genreSerCtrl.Insert(item);
+                        genreCpyCtrl.Insert(item);
                     }
-                    genreSerCtrl.SaveChanges();
+                    genreCpyCtrl.SaveChanges();
 
                     foreach (var item in artistCtrl.GetAll())
                     {
-                        artistSerCtrl.Insert(item);
+                        artistCpyCtrl.Insert(item);
                     }
-                    artistSerCtrl.SaveChanges();
+                    artistCpyCtrl.SaveChanges();
 
                     foreach (var item in albumCtrl.GetAll())
                     {
-                        albumSerCtrl.Insert(item);
+                        albumCpyCtrl.Insert(item);
                     }
-                    albumSerCtrl.SaveChanges();
+                    albumCpyCtrl.SaveChanges();
 
                     foreach (var item in trackCtrl.GetAll())
                     {
-                        trackSerCtrl.Insert(item);
+                        trackCpyCtrl.Insert(item);
                     }
-                    trackSerCtrl.SaveChanges();
+                    trackCpyCtrl.SaveChanges();
                 }
             }
         }
-        static async Task CopyDataFromToAsync(Logic.Factory.PersistenceType source, Logic.Factory.PersistenceType target)
+        static async Task CopyDataFromToLogicAsync(Logic.Factory.PersistenceType source, Logic.Factory.PersistenceType target)
         {
             Logic.Factory.Persistence = source;
             using (var genreCtrl = Logic.Factory.CreateGenreController())
@@ -62,38 +62,38 @@ namespace MusicStore.ConApp
             using (var trackCtrl = Logic.Factory.CreateTrackController(genreCtrl))
             {
                 Logic.Factory.Persistence = target;
-                using (var genreSerCtrl = Logic.Factory.CreateGenreController())
-                using (var artistSerCtrl = Logic.Factory.CreateArtistController(genreSerCtrl))
-                using (var albumSerCtrl = Logic.Factory.CreateAlbumController(genreSerCtrl))
-                using (var trackSerCtrl = Logic.Factory.CreateTrackController(genreSerCtrl))
+                using (var genreCpyCtrl = Logic.Factory.CreateGenreController())
+                using (var artistCpyCtrl = Logic.Factory.CreateArtistController(genreCpyCtrl))
+                using (var albumCpyCtrl = Logic.Factory.CreateAlbumController(genreCpyCtrl))
+                using (var trackCpyCtrl = Logic.Factory.CreateTrackController(genreCpyCtrl))
                 {
                     foreach (var item in await genreCtrl.GetAllAsync())
                     {
-                        await genreSerCtrl.InsertAsync(item);
+                        await genreCpyCtrl.InsertAsync(item);
                     }
-                    await genreSerCtrl.SaveChangesAsync();
+                    await genreCpyCtrl.SaveChangesAsync();
 
                     foreach (var item in await artistCtrl.GetAllAsync())
                     {
-                        await artistSerCtrl.InsertAsync(item);
+                        await artistCpyCtrl.InsertAsync(item);
                     }
-                    await artistSerCtrl.SaveChangesAsync();
+                    await artistCpyCtrl.SaveChangesAsync();
 
                     foreach (var item in await albumCtrl.GetAllAsync())
                     {
-                        await albumSerCtrl.InsertAsync(item);
+                        await albumCpyCtrl.InsertAsync(item);
                     }
-                    await albumSerCtrl.SaveChangesAsync();
+                    await albumCpyCtrl.SaveChangesAsync();
 
                     foreach (var item in await trackCtrl.GetAllAsync())
                     {
-                        await trackSerCtrl.InsertAsync(item);
+                        await trackCpyCtrl.InsertAsync(item);
                     }
-                    await trackSerCtrl.SaveChangesAsync();
+                    await trackCpyCtrl.SaveChangesAsync();
                 }
             }
         }
-        static void PrintData(Logic.Factory.PersistenceType source)
+        static void PrintDataLogic(Logic.Factory.PersistenceType source)
         {
             Logic.Factory.Persistence = source;
             using (var genreCtrl = Logic.Factory.CreateGenreController())
@@ -126,7 +126,7 @@ namespace MusicStore.ConApp
                 }
             }
         }
-        static async Task PrintDataAsync(Logic.Factory.PersistenceType source)
+        static async Task PrintDataLogicAsync(Logic.Factory.PersistenceType source)
         {
             Logic.Factory.Persistence = source;
             using (var genreCtrl = Logic.Factory.CreateGenreController())
@@ -154,6 +154,147 @@ namespace MusicStore.ConApp
 
                 Console.WriteLine("Write all tracks");
                 foreach (var item in await trackCtrl.GetAllAsync())
+                {
+                    Console.WriteLine($"{item.Id} - {item.Title}");
+                }
+            }
+        }
+
+        static void CopyDataFromToByAdapter(Logic.Factory.PersistenceType source, Logic.Factory.PersistenceType target, Adapters.Factory.AdapterType adapter)
+        {
+            Adapters.Factory.Adapter = adapter;
+            Logic.Factory.Persistence = source;
+            using (var genreDac = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
+            using (var artistDac = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
+            using (var albumDac = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
+            using (var trackDac = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
+            {
+                Logic.Factory.Persistence = target;
+                using (var genreCpyDac = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
+                using (var artistCpyDac = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
+                using (var albumCpyDac = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
+                using (var trackCpyDac = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
+                {
+                    foreach (var item in genreDac.GetAll())
+                    {
+                        genreCpyDac.Insert(item);
+                    }
+
+                    foreach (var item in artistDac.GetAll())
+                    {
+                        artistCpyDac.Insert(item);
+                    }
+
+                    foreach (var item in albumDac.GetAll())
+                    {
+                        albumCpyDac.Insert(item);
+                    }
+
+                    foreach (var item in trackDac.GetAll())
+                    {
+                        trackCpyDac.Insert(item);
+                    }
+                }
+            }
+        }
+        static async Task CopyDataFromToByAdapterAsync(Logic.Factory.PersistenceType source, Logic.Factory.PersistenceType target, Adapters.Factory.AdapterType adapter)
+        {
+            Adapters.Factory.Adapter = adapter;
+            Logic.Factory.Persistence = source;
+            using (var genreDac = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
+            using (var artistDac = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
+            using (var albumDac = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
+            using (var trackDac = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
+            {
+                Logic.Factory.Persistence = target;
+                using (var genreCpyDac = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
+                using (var artistCpyDac = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
+                using (var albumCpyDac = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
+                using (var trackCpyDac = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
+                {
+                    foreach (var item in await genreDac.GetAllAsync())
+                    {
+                        await genreCpyDac.InsertAsync(item);
+                    }
+
+                    foreach (var item in await artistDac.GetAllAsync())
+                    {
+                        await artistCpyDac.InsertAsync(item);
+                    }
+
+                    foreach (var item in await albumDac.GetAllAsync())
+                    {
+                        await albumCpyDac.InsertAsync(item);
+                    }
+
+                    foreach (var item in await trackDac.GetAllAsync())
+                    {
+                        await trackCpyDac.InsertAsync(item);
+                    }
+                }
+            }
+        }
+        static void PrintDataAdapter(Adapters.Factory.AdapterType adapter)
+        {
+            Adapters.Factory.Adapter = adapter;
+            using (var genreDac = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
+            using (var artistDac = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
+            using (var albumDac = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
+            using (var trackDac = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
+            {
+                Console.WriteLine("Write all genres");
+                foreach (var item in genreDac.GetAll())
+                {
+                    Console.WriteLine($"{item.Id} - {item.Name}");
+                }
+
+                Console.WriteLine("Write all artists");
+                foreach (var item in artistDac.GetAll())
+                {
+                    Console.WriteLine($"{item.Id} - {item.Name}");
+                }
+
+                Console.WriteLine("Write all alben");
+                foreach (var item in albumDac.GetAll())
+                {
+                    Console.WriteLine($"{item.Id} - {item.Title}");
+                }
+
+                Console.WriteLine("Write all tracks");
+                foreach (var item in trackDac.GetAll())
+                {
+                    Console.WriteLine($"{item.Id} - {item.Title}");
+                }
+            }
+        }
+        static async Task PrintDataAdapterAsync(Adapters.Factory.AdapterType adapter)
+        {
+            Adapters.Factory.Adapter = adapter;
+            using (var genreDac = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
+            using (var artistDac = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
+            using (var albumDac = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
+            using (var trackDac = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
+            {
+                Console.WriteLine("Write all genres");
+                foreach (var item in await genreDac.GetAllAsync())
+                {
+                    Console.WriteLine($"{item.Id} - {item.Name}");
+                }
+
+                Console.WriteLine("Write all artists");
+                foreach (var item in await artistDac.GetAllAsync())
+                {
+                    Console.WriteLine($"{item.Id} - {item.Name}");
+                }
+
+                Console.WriteLine("Write all alben");
+                foreach (var item in await albumDac.GetAllAsync())
+                {
+                    Console.WriteLine($"{item.Id} - {item.Title}");
+                }
+
+                Console.WriteLine("Write all tracks");
+                foreach (var item in await trackDac.GetAllAsync())
                 {
                     Console.WriteLine($"{item.Id} - {item.Title}");
                 }

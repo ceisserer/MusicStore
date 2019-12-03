@@ -159,19 +159,19 @@ namespace MusicStore.Logic.DataContext
         {
             List<E> result;
 
-            if (typeof(I) == typeof(Contracts.IGenre))
+            if (typeof(I) == typeof(Contracts.Persistence.IGenre))
             {
                 result = genres as List<E>;
             }
-            else if (typeof(I) == typeof(Contracts.IArtist))
+            else if (typeof(I) == typeof(Contracts.Persistence.IArtist))
             {
                 result = artists as List<E>;
             }
-            else if (typeof(I) == typeof(Contracts.IAlbum))
+            else if (typeof(I) == typeof(Contracts.Persistence.IAlbum))
             {
                 result = albums as List<E>;
             }
-            else if (typeof(I) == typeof(Contracts.ITrack))
+            else if (typeof(I) == typeof(Contracts.Persistence.ITrack))
             {
                 result = tracks as List<E>;
             }

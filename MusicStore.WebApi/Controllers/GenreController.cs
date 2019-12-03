@@ -1,66 +1,47 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Entity = MusicStore.Contracts.IGenre;
-using Model = MusicStore.Transfer.Models.Genre;
-using Factory = MusicStore.Logic.Factory;
+using Contract = MusicStore.Contracts.Persistence.IGenre;
+using Model = MusicStore.Transfer.Models.Persistence.Genre;
 
 namespace MusicStore.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController : ControllerBase
+    public class GenreController : GenericController<Contract, Model>
     {
-        // GET: api/Genre
+        // GET: api/Album
         [HttpGet]
-        public IEnumerable<Entity> Get()
+        public IEnumerable<Contract> Get()
         {
-            using (var ctrl = Factory.CreateController<Entity>())
-            {
-                return ctrl.GetAll();
-            }
+            return GetAll();
         }
 
-        // GET: api/Genre/5
+        // GET: api/Album/5
         [HttpGet("{id}")]
-        public Entity Get(int id)
+        public Contract Get(int id)
         {
-            using (var ctrl = Factory.CreateController<Entity>())
-            {
-                return ctrl.GetById(id);
-            }
+            return GetById(id);
         }
 
-        // POST: api/Genre
+        // POST: api/Album
         [HttpPost]
         public void Post([FromBody] Model model)
         {
-            using (var ctrl = Factory.CreateController<Entity>())
-            {
-                ctrl.Insert(model);
-                ctrl.SaveChanges();
-            }
+            Insert(model);
         }
 
-        // PUT: api/Genre/5
+        // PUT: api/Album/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] Model model)
         {
-            using (var ctrl = Factory.CreateController<Entity>())
-            {
-                ctrl.Update(model);
-                ctrl.SaveChanges();
-            }
+            Update(id, model);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            using (var ctrl = Factory.CreateController<Entity>())
-            {
-                ctrl.Delete(id);
-                ctrl.SaveChanges();
-            }
+            DeleteById(id);
         }
     }
 }

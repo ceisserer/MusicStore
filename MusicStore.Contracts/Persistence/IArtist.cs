@@ -1,4 +1,4 @@
-﻿namespace MusicStore.Contracts
+﻿namespace MusicStore.Contracts.Persistence
 {
 	public interface IArtist : IIdentifiable
     {

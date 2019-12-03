@@ -1,38 +1,38 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using MusicStore.Contracts;
-using MusicStore.Transfer.Models;
+using Contract = MusicStore.Contracts.Persistence.ITrack;
+using Model = MusicStore.Transfer.Models.Persistence.Track;
 
 namespace MusicStore.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TrackController : GenericController<ITrack, Track>
+    public class TrackController : GenericController<Contract, Model>
     {
-        // GET: api/Track
+        // GET: api/Album
         [HttpGet]
-        public IEnumerable<ITrack> Get()
+        public IEnumerable<Contract> Get()
         {
             return GetAll();
         }
 
-        // GET: api/Track/5
+        // GET: api/Album/5
         [HttpGet("{id}")]
-        public ITrack Get(int id)
+        public Contract Get(int id)
         {
             return GetById(id);
         }
 
-        // POST: api/Track
+        // POST: api/Album
         [HttpPost]
-        public void Post([FromBody] Track model)
+        public void Post([FromBody] Model model)
         {
             Insert(model);
         }
 
-        // PUT: api/Track/5
+        // PUT: api/Album/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Track model)
+        public void Put(int id, [FromBody] Model model)
         {
             Update(id, model);
         }
