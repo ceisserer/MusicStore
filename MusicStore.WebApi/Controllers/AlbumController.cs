@@ -14,6 +14,7 @@ namespace MusicStore.WebApi.Controllers
 		public AlbumController(IConfiguration configuration)
 			: base(configuration)
 		{
+
 		}
 
 		#region Sync-Methods
