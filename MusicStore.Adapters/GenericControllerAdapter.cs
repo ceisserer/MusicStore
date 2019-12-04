@@ -13,7 +13,7 @@ namespace MusicStore.Adapters
 
         public GenericControllerAdapter()
         {
-            controller = Logic.Factory.CreateController<TContract>();
+            controller = Logic.Factory.Create<TContract>();
         }
 
         #region Sync-Methods

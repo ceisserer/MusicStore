@@ -1,4 +1,5 @@
-﻿using MusicStore.Adapters.Exceptions;
+﻿using CommonBase.Extensions;
+using MusicStore.Adapters.Exceptions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -30,89 +31,28 @@ namespace MusicStore.Adapters
             ExtUri = extUri;
         }
 
-
-        #region Helpers
-        protected static string MediaType => "application/json";
-
-        protected HttpClient CreateClient(string baseAddress)
-        {
-            HttpClient client = new HttpClient();
-
-            if (baseAddress.EndsWith(@"/") == false
-                || baseAddress.EndsWith(@"\") == false)
-            {
-                baseAddress = baseAddress + "/";
-            }
-
-            client.BaseAddress = new Uri(baseAddress);
-            client.DefaultRequestHeaders.Accept.Clear();
-
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue(MediaType));
-
-            return client;
-        }
-        protected HttpClient GetClient(string baseAddress)
-        {
-            return CreateClient(baseAddress);
-        }
-
-
         public int Count()
         {
-            throw new NotImplementedException();
+			var task = CountAsync();
+
+			return task.Result;
         }
 
         public IEnumerable<TContract> GetAll()
         {
-            using (var client = GetClient(BaseUri))
-            {
-                var task = Task.Run(async () => await client.GetAsync(ExtUri));
-                HttpResponseMessage response = task.Result;
-                
-                if (response.IsSuccessStatusCode)
-                {
-                    var task2 = Task.Run(async () => await response.Content.ReadAsStringAsync());
-                    string stringData = task2.Result;
-                    return JsonConvert.DeserializeObject<TEntity[]>(stringData) as IEnumerable<TContract>;
-                }
-                else
-                {
-                    var task2 = Task.Run(async () => await response.Content.ReadAsStringAsync());
-                    string errorMessage = $"{response.ReasonPhrase}: {task2.Result}";
+			var task = GetAllAsync();
 
-                    System.Diagnostics.Debug.WriteLine("{0} ({1})", (int)response.StatusCode, errorMessage);
-                    throw new AdapterException((int)response.StatusCode, errorMessage);
-                }
-            }
+			return task.Result;
         }
 
         public TContract GetById(int id)
         {
-            using (var client = GetClient(BaseUri))
-            {
-                var task = Task.Run(async () => await client.GetAsync(ExtUri));
-                HttpResponseMessage response = task.Result;
+			var task = GetByIdAsync(id);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var task2 = Task.Run(async () => await response.Content.ReadAsStringAsync());
-                    string stringData = task2.Result;
-                    return (TContract)JsonConvert.DeserializeObject<TEntity>(stringData);
-                }
-                else
-                {
-                    var task2 = Task.Run(async () => await response.Content.ReadAsStringAsync());
-                    string errorMessage = $"{response.ReasonPhrase}: {task2.Result}";
+			return task.Result;
+		}
 
-                    System.Diagnostics.Debug.WriteLine("{0} ({1})", (int)response.StatusCode, errorMessage);
-                    throw new AdapterException((int)response.StatusCode, errorMessage);
-                }
-            }
-        }
-
-        public TContract Create()
+		public TContract Create()
         {
             return new TEntity();
         }
@@ -132,44 +72,170 @@ namespace MusicStore.Adapters
             throw new NotImplementedException();
         }
 
-        public Task<int> CountAsync()
+        public async Task<int> CountAsync()
         {
-            throw new NotImplementedException();
+			using var client = GetClient(BaseUri);
+			HttpResponseMessage response = await client.GetAsync(ExtUri + "/CountAsync");
+
+			if (response.IsSuccessStatusCode)
+			{
+				string stringData = await response.Content.ReadAsStringAsync();
+
+				return Convert.ToInt32(stringData);
+			}
+			else
+			{
+				string stringData = await response.Content.ReadAsStringAsync();
+				string errorMessage = $"{response.ReasonPhrase}: {stringData}";
+
+				System.Diagnostics.Debug.WriteLine("{0} ({1})", (int)response.StatusCode, errorMessage);
+				throw new AdapterException((int)response.StatusCode, errorMessage);
+			}
+		}
+
+		public async Task<IEnumerable<TContract>> GetAllAsync()
+        {
+			using (var client = GetClient(BaseUri))
+			{
+				HttpResponseMessage response = await client.GetAsync(ExtUri + "/GetAsync");
+
+				if (response.IsSuccessStatusCode)
+				{
+					string stringData = await response.Content.ReadAsStringAsync();
+
+					return JsonConvert.DeserializeObject<TEntity[]>(stringData) as IEnumerable<TContract>;
+				}
+				else
+				{
+					string stringData = await response.Content.ReadAsStringAsync();
+					string errorMessage = $"{response.ReasonPhrase}: {stringData}";
+
+					System.Diagnostics.Debug.WriteLine("{0} ({1})", (int)response.StatusCode, errorMessage);
+					throw new AdapterException((int)response.StatusCode, errorMessage);
+				}
+			}
+		}
+
+		public async Task<TContract> GetByIdAsync(int id)
+        {
+			using (var client = GetClient(BaseUri))
+			{
+				HttpResponseMessage response = await client.GetAsync($"{ExtUri}/GetAsync/{id}");
+
+				if (response.IsSuccessStatusCode)
+				{
+					string stringData = await response.Content.ReadAsStringAsync();
+
+					return (TContract)JsonConvert.DeserializeObject<TEntity>(stringData);
+				}
+				else
+				{
+					string stringData = await response.Content.ReadAsStringAsync();
+					string errorMessage = $"{response.ReasonPhrase}: {stringData}";
+
+					System.Diagnostics.Debug.WriteLine("{0} ({1})", (int)response.StatusCode, errorMessage);
+					throw new AdapterException((int)response.StatusCode, errorMessage);
+				}
+			}
+		}
+
+		public Task<TContract> CreateAsync()
+        {
+            return Task.Run(() => Create());
         }
 
-        public Task<IEnumerable<TContract>> GetAllAsync()
+        public async Task<TContract> InsertAsync(TContract entity)
         {
-            throw new NotImplementedException();
+			entity.CheckArgument(nameof(entity));
+
+			using (var client = GetClient(BaseUri))
+			{
+				int result = 0;
+				string jsonData = JsonConvert.SerializeObject(entity);
+				StringContent contentData = new StringContent(jsonData, Encoding.UTF8, MediaType);
+				HttpResponseMessage response = await client.PostAsync(ExtUri + "/PostAsync", contentData);
+
+				if (response.IsSuccessStatusCode)
+				{
+					string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+					Int32.TryParse(content, out result);
+				}
+				else
+				{
+					string errorMessage = $"{response.ReasonPhrase}: {await response.Content.ReadAsStringAsync()}";
+
+					System.Diagnostics.Debug.WriteLine("{0} ({1})", (int)response.StatusCode, errorMessage);
+					throw new AdapterException((int)response.StatusCode, errorMessage);
+				}
+				return await GetByIdAsync(result);
+			}
+		}
+
+		public async Task UpdateAsync(TContract entity)
+        {
+			entity.CheckArgument(nameof(entity));
+
+			using (var client = GetClient(BaseUri))
+			{
+				string jsonData = JsonConvert.SerializeObject(entity);
+				StringContent contentData = new StringContent(jsonData, Encoding.UTF8, MediaType);
+				HttpResponseMessage response = await client.PutAsync(ExtUri + "/PutAsync", contentData).ConfigureAwait(false);
+
+				if (response.IsSuccessStatusCode == false)
+				{
+					string errorMessage = $"{response.ReasonPhrase}: {await response.Content.ReadAsStringAsync().ConfigureAwait(false)}";
+
+					System.Diagnostics.Debug.WriteLine("{0} ({1})", (int)response.StatusCode, errorMessage);
+					throw new AdapterException((int)response.StatusCode, errorMessage);
+				}
+			}
+		}
+
+		public async Task DeleteAsync(int id)
+        {
+			using (var client = GetClient(BaseUri))
+			{
+				HttpResponseMessage response = await client.DeleteAsync(ExtUri);
+				if (response.IsSuccessStatusCode == false)
+				{
+					string errorMessage = $"{response.ReasonPhrase}: {await response.Content.ReadAsStringAsync()}";
+
+					System.Diagnostics.Debug.WriteLine("{0} ({1})", (int)response.StatusCode, errorMessage);
+					throw new AdapterException((int)response.StatusCode, errorMessage);
+				}
+			}
+		}
+
+		public void Dispose()
+        {
         }
 
-        public Task<TContract> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+		#region Helpers
+		protected static string MediaType => "application/json";
+		protected HttpClient CreateClient(string baseAddress)
+		{
+			HttpClient client = new HttpClient();
 
-        public Task<TContract> CreateAsync()
-        {
-            throw new NotImplementedException();
-        }
+			if (baseAddress.EndsWith(@"/") == false
+				|| baseAddress.EndsWith(@"\") == false)
+			{
+				baseAddress = baseAddress + "/";
+			}
 
-        public Task<TContract> InsertAsync(TContract entity)
-        {
-            throw new NotImplementedException();
-        }
+			client.BaseAddress = new Uri(baseAddress);
+			client.DefaultRequestHeaders.Accept.Clear();
 
-        public Task UpdateAsync(TContract entity)
-        {
-            throw new NotImplementedException();
-        }
+			// Add an Accept header for JSON format.
+			client.DefaultRequestHeaders.Accept.Add(
+				new MediaTypeWithQualityHeaderValue(MediaType));
 
-        public Task DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-        }
-        #endregion Helpers
-    }
+			return client;
+		}
+		protected HttpClient GetClient(string baseAddress)
+		{
+			return CreateClient(baseAddress);
+		}
+		#endregion Helpers
+	}
 }

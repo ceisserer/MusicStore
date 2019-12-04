@@ -7,10 +7,15 @@ namespace MusicStore.ConApp
     {
         static async Task Main(string[] args)
         {
- //           await CopyDataFromToLogicAsync(Logic.Factory.PersistenceType.Csv, Logic.Factory.PersistenceType.Db);
+            // Copy async
+            await CopyDataFromToByLogicAdapterAsync(Logic.Factory.PersistenceType.Csv, Adapters.Factory.AdapterType.Service);
+            // Copy sync		
+            //CopyDataFromToByLogic(Logic.Factory.PersistenceType.Csv, Logic.Factory.PersistenceType.Db);
 
-            // Output
-            PrintDataAdapter(Adapters.Factory.AdapterType.Service);
+            // Output async
+            await PrintDataAdapterAsync(Adapters.Factory.AdapterType.Service);
+            // Output sync
+            //PrintDataLogic(Logic.Factory.PersistenceType.Db);
         }
 
         static void CopyDataFromToByLogic(Logic.Factory.PersistenceType source, Logic.Factory.PersistenceType target)
@@ -160,76 +165,74 @@ namespace MusicStore.ConApp
             }
         }
 
-        static void CopyDataFromToByAdapter(Logic.Factory.PersistenceType source, Logic.Factory.PersistenceType target, Adapters.Factory.AdapterType adapter)
+        static void CopyDataFromToByLogicAdapter(Logic.Factory.PersistenceType source, Adapters.Factory.AdapterType adapter)
         {
-            Adapters.Factory.Adapter = adapter;
             Logic.Factory.Persistence = source;
-            using (var genreDac = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
-            using (var artistDac = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
-            using (var albumDac = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
-            using (var trackDac = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
+            using (var genreCtrl = Logic.Factory.Create<Contracts.Persistence.IGenre>())
+            using (var artistCtrl = Logic.Factory.Create<Contracts.Persistence.IArtist>())
+            using (var albumCtrl = Logic.Factory.Create<Contracts.Persistence.IAlbum>())
+            using (var trackCtrl = Logic.Factory.Create<Contracts.Persistence.ITrack>())
             {
-                Logic.Factory.Persistence = target;
+                Adapters.Factory.Adapter = adapter;
                 using (var genreCpyDac = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
                 using (var artistCpyDac = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
                 using (var albumCpyDac = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
                 using (var trackCpyDac = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
                 {
-                    foreach (var item in genreDac.GetAll())
+                    foreach (var item in genreCtrl.GetAll())
                     {
                         genreCpyDac.Insert(item);
                     }
 
-                    foreach (var item in artistDac.GetAll())
+                    foreach (var item in artistCtrl.GetAll())
                     {
                         artistCpyDac.Insert(item);
                     }
 
-                    foreach (var item in albumDac.GetAll())
+                    foreach (var item in albumCtrl.GetAll())
                     {
                         albumCpyDac.Insert(item);
                     }
 
-                    foreach (var item in trackDac.GetAll())
+                    foreach (var item in trackCtrl.GetAll())
                     {
                         trackCpyDac.Insert(item);
                     }
                 }
             }
         }
-        static async Task CopyDataFromToByAdapterAsync(Logic.Factory.PersistenceType source, Logic.Factory.PersistenceType target, Adapters.Factory.AdapterType adapter)
+        static async Task CopyDataFromToByLogicAdapterAsync(Logic.Factory.PersistenceType source, Adapters.Factory.AdapterType adapter)
         {
-            Adapters.Factory.Adapter = adapter;
             Logic.Factory.Persistence = source;
-            using (var genreDac = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
-            using (var artistDac = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
-            using (var albumDac = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
-            using (var trackDac = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
+            using (var genreCtrl = Logic.Factory.Create<Contracts.Persistence.IGenre>())
+            using (var artistCtrl = Logic.Factory.Create<Contracts.Persistence.IArtist>())
+            using (var albumCtrl = Logic.Factory.Create<Contracts.Persistence.IAlbum>())
+            using (var trackCtrl = Logic.Factory.Create<Contracts.Persistence.ITrack>())
             {
-                Logic.Factory.Persistence = target;
-                using (var genreCpyDac = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
-                using (var artistCpyDac = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
-                using (var albumCpyDac = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
-                using (var trackCpyDac = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
+                Adapters.Factory.Adapter = adapter;
+                using (var genreCpyCtrl = Adapters.Factory.Create<Contracts.Persistence.IGenre>())
+                using (var artistCpyCtrl = Adapters.Factory.Create<Contracts.Persistence.IArtist>())
+                using (var albumCpyCtrl = Adapters.Factory.Create<Contracts.Persistence.IAlbum>())
+                using (var trackCpyCtrl = Adapters.Factory.Create<Contracts.Persistence.ITrack>())
                 {
-                    foreach (var item in await genreDac.GetAllAsync())
+                    foreach (var item in await genreCtrl.GetAllAsync())
                     {
-                        await genreCpyDac.InsertAsync(item);
+                        await genreCpyCtrl.InsertAsync(item);
                     }
 
-                    foreach (var item in await artistDac.GetAllAsync())
+                    foreach (var item in await artistCtrl.GetAllAsync())
                     {
-                        await artistCpyDac.InsertAsync(item);
+                        await artistCpyCtrl.InsertAsync(item);
                     }
 
-                    foreach (var item in await albumDac.GetAllAsync())
+                    foreach (var item in await albumCtrl.GetAllAsync())
                     {
-                        await albumCpyDac.InsertAsync(item);
+                        await albumCpyCtrl.InsertAsync(item);
                     }
 
-                    foreach (var item in await trackDac.GetAllAsync())
+                    foreach (var item in await trackCtrl.GetAllAsync())
                     {
-                        await trackCpyDac.InsertAsync(item);
+                        await trackCpyCtrl.InsertAsync(item);
                     }
                 }
             }

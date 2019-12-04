@@ -100,55 +100,32 @@ namespace MusicStore.Logic.DataContext
         #endregion Sync-Methods
 
         #region Async-Methods
+		// Falls die synchronen Methoden entfernt werden soll,
+		// dann werden diese private spezifiziert und aus dem 
+		// Interface entfernt.
         public override Task<int> CountAsync<I, E>()
         {
-            return Task.Run(() => Set<I, E>().Count());
+            return Task.Run(() => Count<I, E>());
         }
         public override Task<E> CreateAsync<I, E>()
         {
-            return Task.Run(() => new E());
+            return Task.Run(() => Create<I, E>());
         }
         public override Task<E> InsertAsync<I, E>(I entity)
         {
             entity.CheckArgument(nameof(entity));
 
-            return Task.Run(() =>
-            {
-                E result = new E();
-
-                result.CopyProperties(entity);
-                result.Id = 0;
-                Set<I, E>().Add(result);
-                return result;
-            });
+			return Task.Run(() => Insert<I, E>(entity));
         }
         public override Task<E> UpdateAsync<I, E>(I entity)
         {
             entity.CheckArgument(nameof(entity));
 
-            return Task.Run(() =>
-            {
-                E result = Set<I, E>().SingleOrDefault(i => i.Id == entity.Id);
-
-                if (result != null)
-                {
-                    result.CopyProperties(entity);
-                }
-                return result;
-            });
+			return Task.Run(() => Update<I, E>(entity));
         }
         public override Task<E> DeleteAsync<I, E>(int id)
         {
-            return Task.Run(() =>
-            {
-                E result = Set<I, E>().SingleOrDefault(i => i.Id == id);
-
-                if (result != null)
-                {
-                    Set<I, E>().Remove(result);
-                }
-                return result;
-            });
+			return Task.Run(() => Delete<I, E>(id));
         }
         #endregion Async-Methods
 

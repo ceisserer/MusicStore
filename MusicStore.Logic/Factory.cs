@@ -30,7 +30,7 @@ namespace MusicStore.Logic
             return result;
         }
 
-        public static IController<T> CreateController<T>() where T : Contracts.IIdentifiable
+        public static IController<T> Create<T>() where T : Contracts.IIdentifiable
         {
             IController<T> result = null;
 
@@ -52,7 +52,7 @@ namespace MusicStore.Logic
             }
             return result;
         }
-        public static IController<T> CreateController<T>(object sharedController) where T : Contracts.IIdentifiable
+        public static IController<T> Create<T>(object sharedController) where T : Contracts.IIdentifiable
         {
             IController<T> result = null;
 
