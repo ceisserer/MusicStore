@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A7BE8175-1FE5-49FB-96E0-491526E345B6}"
 	ProjectSection(SolutionItems) = preProject
 		index.html = index.html
+		Installation.md = Installation.md
 		OM ML MusicStore.drawio = OM ML MusicStore.drawio
 		OM MusicStore Analysemodell.doc = OM MusicStore Analysemodell.doc
 	EndProjectSection

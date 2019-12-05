@@ -11,20 +11,20 @@ namespace MusicStore.WebApi.Controllers
     [ApiController]
     public class ArtistController : GenericController<Contract, Model>
     {
-		public ArtistController(IConfiguration configuration)
-			: base(configuration)
-		{
-		}
+        public ArtistController(IConfiguration configuration)
+            : base(configuration)
+        {
+        }
 
-		#region Sync-Methods
-		[HttpGet("/api/[controller]/Count")]
-		public int GetCount()
-		{
-			return Count();
-		}
+        #region Sync-Methods
+        [HttpGet("/api/[controller]/Count")]
+        public int GetCount()
+        {
+            return Count();
+        }
 
-		// GET: api/Artist
-		[HttpGet]
+        // GET: api/Artist
+        [HttpGet]
         public IEnumerable<Contract> Get()
         {
             return GetAll();
